@@ -5,46 +5,44 @@ var mongoose = require("mongoose");
 //CONNECT
 mongoose.connect("mongodb://localhost/blubber_app");
 
+var User    = require("./models/User"),
+    Thread  = require("./models/Thread");
+Thread.remove({}, function(err, results) {
+  User.remove({}, function(err, results) {
 
-//MAKE SCHEMA
-var userSchema = new mongoose.Schema({
-  name:      { type: String, required: true },
-  email:     { type: String, required: true },
-  // password:  String,
-  moderator: { type: Boolean, default: false}
-});
+    if (err) console.log(err);
 
+    User.create([
+       { name: "John Marshall",
+         email: "jm@us.courts.gov",
+         moderator: true
+       },
+       { name: "Oliver Wendell Holmes Jr.",
+         email: "owh2@us.courts.gov"
+       },
+       { name: "Thurgood Marshall",
+         email: "tm@us.courts.gov"
+       },
+       { name: "Sandra Day O'Connor",
+         email: "sdo@us.courts.gov"
+       }
+     ], function(err, users) {
+        if (err) console.log(err);
+        console.log(users);
+        var john = users[0];
 
-//MAKE MODEL
-var User = mongoose.model("User", userSchema);
+          // CREATE THREADS
+          Thread.create(
+            {name: "YOLO", creator: john},
+            function(err, results) {
+              if (err) console.log(err);
+              console.log(results);
 
-User.remove({}, function(err, res) {
-
-  console.log("Creating users!");
-
-  User.create([
-     { name: "John Marshall",
-       email: "jm@us.courts.gov",
-       moderator: true
-     },
-     { name: "Oliver Wendell Holmes Jr.",
-       email: "owh2@us.courts.gov"
-     },
-     { name: "Thurgood Marshall",
-       email: "tm@us.courts.gov"
-     },
-     { name: "Sandra Day O'Connor",
-       email: "sdo@us.courts.gov"
-     }
-   ], function(err, users) {
-      if (err) {
-        console.log(err);
-      } else {
-        console.log(users)
-      }
-        mongoose.connection.close();
+              mongoose.connection.close();
+          });
+      });
     });
-  });
+});
 
 
 
