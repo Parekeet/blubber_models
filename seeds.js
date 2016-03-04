@@ -7,6 +7,7 @@ mongoose.connect("mongodb://localhost/blubber_app");
 
 var User    = require("./models/User"),
     Thread  = require("./models/Thread");
+
 Thread.remove({}, function(err, results) {
   User.remove({}, function(err, results) {
 
@@ -28,12 +29,17 @@ Thread.remove({}, function(err, results) {
        }
      ], function(err, users) {
         if (err) console.log(err);
-        console.log(users);
+        // console.log(users);
+
         var john = users[0];
+        var thur = users[1];
+
 
           // CREATE THREADS
-          Thread.create(
+          Thread.create([
             {name: "YOLO", creator: john},
+            {name: "Think Different", creator: thur}
+            ],
             function(err, results) {
               if (err) console.log(err);
               console.log(results);
@@ -41,7 +47,7 @@ Thread.remove({}, function(err, results) {
               mongoose.connection.close();
           });
       });
-    });
+  });
 });
 
 
